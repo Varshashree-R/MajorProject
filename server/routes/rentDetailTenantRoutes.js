@@ -4,7 +4,7 @@ import {
   getSingleRentDetailsTenantView,
   getAllPaymentHistory,
 } from "../controllers/rentDetailTenantControllers.js";
-
+// 
 /**
  * @description Get Single Rent Detail for tenant user
  * @route GET /api/rentDetailTenant/:realEstateId
