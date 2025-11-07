@@ -19,13 +19,12 @@ const getAuthHeaders = (token) => ({
 
 export const postRealEstate = createAsyncThunk(
   "property/postRealEstate",
-  async ({ formData, token }, thunkAPI) => {
+  async ({ formData }, thunkAPI) => {
     try {
-      const { data } = await axiosFetch.post("/owner/real-estate", formData, {
-        headers: getAuthHeaders(token),
-      });
+      const { data } = await axiosFetch.post("/owner/real-estate", formData);
+        //headers: getAuthHeaders(token)
       return data;
-    } catch (error) {
+    }catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.msg || error.message
       );
