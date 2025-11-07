@@ -1,5 +1,4 @@
-import axiosFetch from "../../utils/axiosCreate";
-//import axios from "axios";
+import axios from "axios";
 import { logOut } from "../features/auth/authSlice";
 
 let store;
