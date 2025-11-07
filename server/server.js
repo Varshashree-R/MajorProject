@@ -5,12 +5,10 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
 
-// Security packages
 import helmet from "helmet";
 import xss from "xss-clean";
 import mongoSanitize from "express-mongo-sanitize";
 
-// Database and routes
 import connectDB from "./database/connectDB.js";
 
 import authRoutes from "./routes/authRoutes.js";
@@ -29,26 +27,31 @@ import errorHandlerMiddleware from "./middleware/error-handler.js";
 import { authorizeOwnerUser, authorizeTenantUser } from "./middleware/userAuthorization.js";
 
 import { Server } from "socket.io";
-
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 
-import Property from "./models/Property.js";
-
 dotenv.config();
-
 const app = express();
 
-// Logging requests in development
+// ✅ Logging
 if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
 }
 
-// Static folder for frontend build files
-const __dirname = dirname(fileURLToPath(import.meta.url));
-app.use(express.static(path.resolve(__dirname, "../client/dist")));
+// ✅ CLEAN + CORRECT CORS (ONLY THIS)
+app.use(
+  cors({
+    origin: "https://frontend-rc9t.onrender.com",
+    credentials: true,
+    methods: "GET,POST,PUT,PATCH,DELETE,OPTIONS",
+    allowedHeaders: "Content-Type, Authorization",
+  })
+);
 
-// Middleware
+// ✅ Allow preflight for all routes
+app.options("*", cors());
+
+// ✅ Basic security middlewares
 app.use(express.json());
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(xss());
@@ -56,87 +59,75 @@ app.use(mongoSanitize());
 app.set("trust proxy", 1);
 app.use(cookieParser());
 
-// ✅ Proper CORS setup
-app.use(
-  cors({
-    origin:  ["https://frontend-rc9t.onrender.com"], // correct frontend URL
-    //credentials: true,
-    methods: ["GET", "POST","HEAD", "PUT","PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
-);
+// ✅ Static build — production
+const __dirname = dirname(fileURLToPath(import.meta.url));
+app.use(express.static(path.resolve(__dirname, "../client/dist")));
 
-app.use(express.json());
-
+// ✅ Health check
 app.get("/test-backend", (req, res) => {
   res.send("Backend is working!");
 });
 
-//app.options("*", cors({
- // origin: "https://tenantix-finalfrontend.onrender.com",
- // credentials: true,
-//}));
+// ✅ ====== ROUTES WITH PRE-FLIGHT FIXES ======
 
-app.use(cookieParser()); //to parse cookies
-
-app.use(function (req, res, next) {
-  res.header("Content-Type", "application/json;charset=UTF-8");
-  res.header("Access-Control-Allow-Credentials", true);
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
-
-
-// Routes
+// AUTH (no protection)
 app.use("/api/auth", authRoutes);
+
+// OWNER routes
+app.options("/api/owner/real-estate", cors());
 app.use("/api/owner/real-estate", authorizeOwnerUser, ownerPropertyRoutes);
+
+app.options("/api/owner", cors());
+app.use("/api/owner", authorizeOwnerUser, ownerUserRoutes);
+
+app.options("/api/rentDetail", cors());
+app.use("/api/rentDetail", authorizeOwnerUser, ownerRentDetailRoutes);
+
+// TENANT routes
+app.options("/api/tenant/real-estate", cors());
 app.use("/api/tenant/real-estate", authorizeTenantUser, tenantPropertyRoutes);
 
-app.use("/api/owner", authorizeOwnerUser, ownerUserRoutes);
+app.options("/api/tenant", cors());
 app.use("/api/tenant", authorizeTenantUser, tenantUserRoutes);
 
-app.use("/api/sendEmail", emailSenderRoutes); //send mail
-
-app.use("/api/contract", contractRoutes);
-
-app.use("/api/rentDetail", authorizeOwnerUser, ownerRentDetailRoutes);
+app.options("/api/rentDetailTenant", cors());
 app.use("/api/rentDetailTenant", authorizeTenantUser, tenantRentDetailRoutes);
 
+// Email + Contract + Chat
+app.use("/api/sendEmail", emailSenderRoutes);
+app.use("/api/contract", contractRoutes);
 app.use("/api/chat", chatRoutes);
 
-// Serve frontend files in production
+// ✅ Frontend route
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "../client/dist", "index.html"));
 });
 
-// Error handling
+// ✅ Error handlers
 app.use(errorHandlerMiddleware);
 app.use(routeNotFoundMiddleware);
 
+// ✅ Start server
 const PORT = process.env.PORT || 5000;
 
-// Start server and connect to DB
 const start = async () => {
   try {
     await connectDB(process.env.MONGO_URI);
-  } catch (error) {
-    console.log(error);
+    console.log("✅ MongoDB connected");
+  } catch (err) {
+    console.log("❌ DB error:", err);
   }
 };
 start();
 
 const server = app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`✅ Server running on port ${PORT}`);
 });
 
-// Socket.io setup
+// ✅ SOCKET.IO
 const io = new Server(server, {
   cors: {
-    origin: ["https://frontend-rc9t.onrender.com"],
+    origin: "https://frontend-rc9t.onrender.com",
     credentials: true,
   },
 });
