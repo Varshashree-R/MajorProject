@@ -415,7 +415,7 @@ const forgotPassword = async (req, res) => {
 
     //generate token
     const token = jwt.sign({ _id: user._id }, process.env.RESET_PASSWORD_KEY, {
-      expiresIn: "5m",
+      expiresIn: "15m",
     });
 
     // send email with token
@@ -447,7 +447,7 @@ const forgotPassword = async (req, res) => {
     }
 
     const token = jwt.sign({ _id: user._id }, process.env.RESET_PASSWORD_KEY, {
-      expiresIn: "5m",
+      expiresIn: "15m",
     });
 
     const to = email;
