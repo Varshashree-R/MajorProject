@@ -126,7 +126,7 @@ const register = async (req, res) => {
       owner.accountVerificationToken = undefined;
 
       const to = email;
-      const from = process.env.EMAIL_USER;
+      const from = process.env.SENDGRID_FROM;
       const subject = "Email Verification Link";
       const body = `<p>Hello ${owner.firstName} ${owner.lastName},</p>
                     <p>Click to verify:</p>
@@ -150,7 +150,7 @@ const register = async (req, res) => {
       tenant.accountVerificationToken = undefined;
 
       const to = email;
-      const from = process.env.EMAIL_USER;
+      const from = process.env.SENDGRID_FROM;
       const subject = "Email Verification Link";
       const body = `<p>Hello ${tenant.firstName} ${tenant.lastName},</p>
                     <p>Click to verify:</p>
@@ -283,7 +283,7 @@ const resendVerificationEmail = async (req, res) => {
 
     // send email with token code
     const to = email;
-    const from = process.env.EMAIL_USER;
+    const from = process.env.SENDGRID_FROM;
     const subject = "Email Verification Link";
     const body = `
     <p> Hello ${owner.firstName} ${owner.lastName},</p>
@@ -321,7 +321,7 @@ const resendVerificationEmail = async (req, res) => {
 
     // send email with token code
     const to = email;
-    const from = process.env.EMAIL_USER;
+    const from = process.env.SENDGRID_FROM;
     const subject = "Email Verification Link";
     const body = `
     <p> Hello ${tenant.firstName} ${tenant.lastName},</p>
@@ -420,7 +420,7 @@ const forgotPassword = async (req, res) => {
 
     // send email with token
     const to = email;
-    const from = process.env.EMAIL_USER;
+    const from = process.env.SENDGRID_FROM;
     const subject = "Reset Account Password Link";
     const body = `
   <h3>Please click the link below to reset your password</h3>
@@ -451,7 +451,7 @@ const forgotPassword = async (req, res) => {
     });
 
     const to = email;
-    const from = process.env.EMAIL_USER;
+    const from = process.env.SENDGRID_FROM;
     const subject = "Reset Account Password Link";
     const body = `
   <h3>Please click the link below to reset your password</h3>
