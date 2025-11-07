@@ -1,97 +1,137 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axiosFetch from "../../utils/axiosCreate";
+import axios from "axios";
+
+// ==================== Axios instance ====================
+const axiosFetch = axios.create({
+  baseURL: "https://backend-qd0z.onrender.com/api",
+  withCredentials: true, // ✅ send cookies if backend uses them
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+// Helper to attach token dynamically
+const getAuthHeaders = (token) => ({
+  Authorization: `Bearer ${token}`,
+});
+
+// ==================== Thunks ====================
 
 export const postRealEstate = createAsyncThunk(
-  "postRealEstate",
-  async ({ formData }, thunkAPI) => {
+  "property/postRealEstate",
+  async ({ formData, token }, thunkAPI) => {
     try {
-      const { data } = await axiosFetch.post("/owner/real-estate", formData);
-      return await data;
+      const { data } = await axiosFetch.post("/owner/real-estate", formData, {
+        headers: getAuthHeaders(token),
+      });
+      return data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data.msg);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.msg || error.message
+      );
     }
   }
 );
 
 export const getPersonalRealEstate = createAsyncThunk(
-  "getPersonalRealEstate",
-  async ({ page }, thunkAPI) => {
+  "property/getPersonalRealEstate",
+  async ({ page = 1, token }, thunkAPI) => {
     try {
-      const { data } = await axiosFetch.get(`/owner/real-estate?page=${page}`);
-      return await data;
+      const { data } = await axiosFetch.get(
+        `/owner/real-estate?page=${page}`,
+        {
+          headers: getAuthHeaders(token),
+        }
+      );
+      return data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data.msg);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.msg || error.message
+      );
     }
   }
 );
 
 export const getRealEstateDetail = createAsyncThunk(
-  "getRealEstateDetail",
-  async ({ slug }, thunkAPI) => {
+  "property/getRealEstateDetail",
+  async ({ slug, token }, thunkAPI) => {
     try {
-      const { data } = await axiosFetch.get(`/owner/real-estate/${slug}`);
-      return await data;
+      const { data } = await axiosFetch.get(`/owner/real-estate/${slug}`, {
+        headers: getAuthHeaders(token),
+      });
+      return data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data.msg);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.msg || error.message
+      );
     }
   }
 );
 
 export const updateRealEstateDetail = createAsyncThunk(
-  "updateRealEstateDetail",
-  async ({ slug, formValues }, thunkAPI) => {
+  "property/updateRealEstateDetail",
+  async ({ slug, formValues, token }, thunkAPI) => {
     try {
       const { data } = await axiosFetch.patch(
         `/owner/real-estate/update/${slug}`,
-        formValues
+        formValues,
+        { headers: getAuthHeaders(token) }
       );
-      return await data;
+      return data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data.msg);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.msg || error.message
+      );
     }
   }
 );
 
 export const deleteProperty = createAsyncThunk(
-  "deleteProperty",
-  async ({ slug }, thunkAPI) => {
+  "property/deleteProperty",
+  async ({ slug, token }, thunkAPI) => {
     try {
       const { data } = await axiosFetch.delete(
-        `/owner/real-estate/delete/${slug}`
+        `/owner/real-estate/delete/${slug}`,
+        { headers: getAuthHeaders(token) }
       );
-      return await data;
+      return data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data.msg);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.msg || error.message
+      );
     }
   }
 );
 
+// ==================== Slice ====================
 const realEstateOwnerSlice = createSlice({
   name: "property",
   initialState: {
     allRealEstate: null,
     realEstate: null,
     isLoading: false,
+    isProcessing: false,
+    postSuccess: false,
     alertFlag: false,
     alertMsg: "",
     alertType: null,
-    postSuccess: false,
-    isProcessing: false,
     numberOfPages: null,
   },
   reducers: {
     clearAlert: (state) => {
       state.alertFlag = false;
       state.alertMsg = "";
+      state.alertType = null;
     },
   },
   extraReducers: (builder) => {
     builder
+      // POST
       .addCase(postRealEstate.pending, (state) => {
-        state.isLoading = true;
+        state.isProcessing = true;
       })
       .addCase(postRealEstate.fulfilled, (state, action) => {
-        state.isLoading = false;
+        state.isProcessing = false;
         state.realEstate = action.payload.realEstate;
         state.postSuccess = true;
         state.alertFlag = true;
@@ -99,12 +139,13 @@ const realEstateOwnerSlice = createSlice({
         state.alertType = "success";
       })
       .addCase(postRealEstate.rejected, (state, action) => {
-        state.isLoading = false;
+        state.isProcessing = false;
+        state.postSuccess = false;
         state.alertFlag = true;
         state.alertMsg = action.payload;
         state.alertType = "error";
-        state.postSuccess = false;
       })
+      // GET PERSONAL
       .addCase(getPersonalRealEstate.pending, (state) => {
         state.isLoading = true;
       })
@@ -120,6 +161,7 @@ const realEstateOwnerSlice = createSlice({
         state.alertMsg = action.payload;
         state.alertType = "error";
       })
+      // GET SINGLE DETAIL
       .addCase(getRealEstateDetail.pending, (state) => {
         state.isLoading = true;
         state.postSuccess = false;
@@ -135,6 +177,7 @@ const realEstateOwnerSlice = createSlice({
         state.alertMsg = action.payload;
         state.alertType = "error";
       })
+      // UPDATE
       .addCase(updateRealEstateDetail.pending, (state) => {
         state.isProcessing = true;
       })
@@ -143,7 +186,7 @@ const realEstateOwnerSlice = createSlice({
         state.realEstate = action.payload.updatedRealEstate;
         state.postSuccess = true;
         state.alertFlag = true;
-        state.alertMsg = "Property details updated successfully";
+        state.alertMsg = "Property updated successfully";
         state.alertType = "success";
       })
       .addCase(updateRealEstateDetail.rejected, (state, action) => {
@@ -152,6 +195,7 @@ const realEstateOwnerSlice = createSlice({
         state.alertMsg = action.payload;
         state.alertType = "error";
       })
+      // DELETE
       .addCase(deleteProperty.pending, (state) => {
         state.isProcessing = true;
       })
@@ -159,7 +203,7 @@ const realEstateOwnerSlice = createSlice({
         state.isProcessing = false;
         state.postSuccess = true;
         state.alertFlag = true;
-        state.alertMsg = "Property deleted successfully. Redirecting...";
+        state.alertMsg = "Property deleted successfully";
         state.alertType = "success";
       })
       .addCase(deleteProperty.rejected, (state, action) => {
@@ -172,5 +216,4 @@ const realEstateOwnerSlice = createSlice({
 });
 
 export const { clearAlert } = realEstateOwnerSlice.actions;
-
 export default realEstateOwnerSlice.reducer;

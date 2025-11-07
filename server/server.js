@@ -59,7 +59,7 @@ app.use(cookieParser());
 // ✅ Proper CORS setup
 app.use(
   cors({
-    origin:  ["https://tenantix-finalfrontend.onrender.com"], // correct frontend URL
+    origin:  ["https://frontend-rc9t.onrender.com"], // correct frontend URL
     //credentials: true,
     methods: ["GET", "POST","HEAD", "PUT","PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -136,7 +136,7 @@ const server = app.listen(PORT, () => {
 // Socket.io setup
 const io = new Server(server, {
   cors: {
-    origin: ["https://tenantix-finalfrontend.onrender.com"],
+    origin: ["https://frontend-rc9t.onrender.com"],
     credentials: true,
   },
 });
