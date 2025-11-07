@@ -1,4 +1,5 @@
-import axios from "axios";
+import axiosFetch from "../../utils/axiosCreate";
+//import axios from "axios";
 import { logOut } from "../features/auth/authSlice";
 
 let store;
@@ -23,6 +24,7 @@ const axiosFetch = axios.create({
 
 axiosFetch.interceptors.request.use(
   (config) => {
+    console.log("🔥 REQUEST INTERCEPTOR TRIGGERED");  
     const token = localStorage.getItem("token");
 
     console.log("👉 TOKEN SENT TO SERVER:", token);   // ✅ PUT IT HERE
