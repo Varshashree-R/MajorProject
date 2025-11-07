@@ -11,15 +11,30 @@ const axiosFetch = axios.create({
   withCredentials: true,
 });
 
+//axiosFetch.interceptors.request.use(
+  //(config) => {
+    //config.headers["Authorization"] = `Bearer ${localStorage.getItem("token")}`;
+ //   return config;
+//  },
+  //(error) => {
+    //return Promise.reject(error);
+  //}
+//);
+
 axiosFetch.interceptors.request.use(
   (config) => {
-    config.headers["Authorization"] = `Bearer ${localStorage.getItem("token")}`;
+    const token = localStorage.getItem("token");
+
+    console.log("👉 TOKEN SENT TO SERVER:", token);   // ✅ PUT IT HERE
+
+    config.headers["Authorization"] = `Bearer ${token}`;
     return config;
   },
   (error) => {
     return Promise.reject(error);
   }
 );
+
 
 const userType = localStorage.getItem("userType");
 
