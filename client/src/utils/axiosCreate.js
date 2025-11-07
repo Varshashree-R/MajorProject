@@ -6,6 +6,7 @@ export const injectStore = (_store) => {
   store = _store;
 };
 
+console.log("✅ axiosCreate.js loaded"); // Debug log to confirm import
 const axiosFetch = axios.create({
   baseURL: import.meta.env.VITE_APP_API_URL || "/api",
   withCredentials: true,

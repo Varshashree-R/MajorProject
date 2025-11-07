@@ -1,30 +1,16 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-
-// ==================== Axios instance ====================
-const axiosFetch = axios.create({
-  baseURL: "https://backend-qd0z.onrender.com/api",
-  withCredentials: true, // ✅ send cookies if backend uses them
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-// Helper to attach token dynamically
-const getAuthHeaders = (token) => ({
-  Authorization: `Bearer ${token}`,
-});
+import axiosFetch from "../../utils/axiosCreate"; // ✅ Use axiosFetch here
 
 // ==================== Thunks ====================
 
+// Create Property (POST)
 export const postRealEstate = createAsyncThunk(
   "property/postRealEstate",
   async ({ formData }, thunkAPI) => {
     try {
       const { data } = await axiosFetch.post("/owner/real-estate", formData);
-        //headers: getAuthHeaders(token)
       return data;
-    }catch (error) {
+    } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.msg || error.message
       );
@@ -32,15 +18,13 @@ export const postRealEstate = createAsyncThunk(
   }
 );
 
+// Get Logged-in Owner's Properties
 export const getPersonalRealEstate = createAsyncThunk(
   "property/getPersonalRealEstate",
-  async ({ page = 1, token }, thunkAPI) => {
+  async ({ page = 1 }, thunkAPI) => {
     try {
       const { data } = await axiosFetch.get(
-        `/owner/real-estate?page=${page}`,
-        {
-          headers: getAuthHeaders(token),
-        }
+        `/owner/real-estate?page=${page}`
       );
       return data;
     } catch (error) {
@@ -51,13 +35,12 @@ export const getPersonalRealEstate = createAsyncThunk(
   }
 );
 
+// Get single property details
 export const getRealEstateDetail = createAsyncThunk(
   "property/getRealEstateDetail",
-  async ({ slug, token }, thunkAPI) => {
+  async ({ slug }, thunkAPI) => {
     try {
-      const { data } = await axiosFetch.get(`/owner/real-estate/${slug}`, {
-        headers: getAuthHeaders(token),
-      });
+      const { data } = await axiosFetch.get(`/owner/real-estate/${slug}`);
       return data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -67,14 +50,14 @@ export const getRealEstateDetail = createAsyncThunk(
   }
 );
 
+// Update property
 export const updateRealEstateDetail = createAsyncThunk(
   "property/updateRealEstateDetail",
-  async ({ slug, formValues, token }, thunkAPI) => {
+  async ({ slug, formValues }, thunkAPI) => {
     try {
       const { data } = await axiosFetch.patch(
         `/owner/real-estate/update/${slug}`,
-        formValues,
-        { headers: getAuthHeaders(token) }
+        formValues
       );
       return data;
     } catch (error) {
@@ -85,13 +68,13 @@ export const updateRealEstateDetail = createAsyncThunk(
   }
 );
 
+// Delete property
 export const deleteProperty = createAsyncThunk(
   "property/deleteProperty",
-  async ({ slug, token }, thunkAPI) => {
+  async ({ slug }, thunkAPI) => {
     try {
       const { data } = await axiosFetch.delete(
-        `/owner/real-estate/delete/${slug}`,
-        { headers: getAuthHeaders(token) }
+        `/owner/real-estate/delete/${slug}`
       );
       return data;
     } catch (error) {
@@ -116,6 +99,7 @@ const realEstateOwnerSlice = createSlice({
     alertType: null,
     numberOfPages: null,
   },
+
   reducers: {
     clearAlert: (state) => {
       state.alertFlag = false;
@@ -123,6 +107,7 @@ const realEstateOwnerSlice = createSlice({
       state.alertType = null;
     },
   },
+
   extraReducers: (builder) => {
     builder
       // POST
@@ -144,6 +129,7 @@ const realEstateOwnerSlice = createSlice({
         state.alertMsg = action.payload;
         state.alertType = "error";
       })
+
       // GET PERSONAL
       .addCase(getPersonalRealEstate.pending, (state) => {
         state.isLoading = true;
@@ -160,6 +146,7 @@ const realEstateOwnerSlice = createSlice({
         state.alertMsg = action.payload;
         state.alertType = "error";
       })
+
       // GET SINGLE DETAIL
       .addCase(getRealEstateDetail.pending, (state) => {
         state.isLoading = true;
@@ -176,6 +163,7 @@ const realEstateOwnerSlice = createSlice({
         state.alertMsg = action.payload;
         state.alertType = "error";
       })
+
       // UPDATE
       .addCase(updateRealEstateDetail.pending, (state) => {
         state.isProcessing = true;
@@ -194,6 +182,7 @@ const realEstateOwnerSlice = createSlice({
         state.alertMsg = action.payload;
         state.alertType = "error";
       })
+
       // DELETE
       .addCase(deleteProperty.pending, (state) => {
         state.isProcessing = true;
