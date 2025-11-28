@@ -17,7 +17,7 @@ const UpdatePropertyForm = ({
   category,
   area,
   floors,
-  furnshing,
+  furnishing,
   facing,
   address,
   parking_availability,
@@ -32,7 +32,7 @@ const UpdatePropertyForm = ({
     category,
     area,
     floors,
-    furnshing,
+    furnishing,
     facing,
     parking_availability,
   };
@@ -147,13 +147,13 @@ const UpdatePropertyForm = ({
 
           <FormSelectField
             label="Furnishing"
-            name="furnshing"
+            name="furnishing"
             options={[
               "Fully Furnished",
               "Semi-Furnished",
               "Unfurnished"
             ]}
-            value={values.furnshing}
+            value={values.furnishing}
             handleChange={handleChange}
           />
 

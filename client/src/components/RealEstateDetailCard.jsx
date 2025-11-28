@@ -11,6 +11,7 @@ const RealEstateDetailCard = ({
   _id,
   title,
   address,
+  security_deposit,
   price,
   realEstateImages,
   createdAt,
@@ -46,6 +47,9 @@ const RealEstateDetailCard = ({
               <span className="font-semibold text-lg text-primaryDark">
                 RS. {format(price)}
               </span>
+              <div>
+                <p className="font-roboto text-gray-500"> Security Deposit = RS. {format(security_deposit)}</p>
+              </div>
 
               <div>
                 <p className="font-roboto text-gray-500">{category}</p>

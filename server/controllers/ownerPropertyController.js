@@ -68,27 +68,32 @@ const getSingleProperty = async (req, res) => {
 const updatePropertyDetails = async (req, res) => {
   const {
     price,
+    security_deposit,
     location,
     streetName,
     parking_availability,
     description,
     area,
     floors,
-    furnshing,
+    furnishing,
     facing,
     category,
+    city,
   } = req.body;
 
   if (
     !price ||
+    !security_deposit||
     !location ||
     !streetName ||
     !parking_availability ||
     !description ||
     !area ||
+    !city||
     !floors ||
-    !furnshing ||
+    !furnishing ||
     !facing ||
+    !city||
     !category
   ) {
     throw new BadRequestError("All fields are required");
@@ -114,10 +119,11 @@ const updatePropertyDetails = async (req, res) => {
       security_deposit,
       description,
       area,
+      city,
       parking_availability,
       floors,
       facing,
-      furnshing,
+      furnishing,
       category,
       address: { location, streetName },
     },

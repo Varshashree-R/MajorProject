@@ -107,10 +107,7 @@ const OwnerUserDetailPage = () => {
             <LocationOnOutlinedIcon sx={{ color: "#019149" }} />
             <p>{user?.address}</p>
           </div>
-          <div className="flex mt-2 gap-2 items-center">
-            <LocalPhoneRoundedIcon sx={{ color: "#6D9886" }} />
-            <p className="ml-3">+91 {user?.phoneNumber}</p>
-          </div>
+          
           <div className="flex mt-2 gap-2 items-center">
             <EmailRoundedIcon sx={{ color: "#E7AB79" }} />
             <p className="">{user?.email}</p>

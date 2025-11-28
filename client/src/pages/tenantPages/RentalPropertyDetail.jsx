@@ -179,7 +179,7 @@ const RentalPropertyDetail = () => {
 
   <div className="flex items-center gap-2">
     <span className="font-semibold">Furnishing</span>
-    <p>{realEstate?.furnshing }</p>
+    <p>{realEstate?.furnishing }</p>
   </div>
 
   <div className="flex items-center gap-2">

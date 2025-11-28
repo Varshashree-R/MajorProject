@@ -62,7 +62,7 @@ const RealEstateSchema = new mongoose.Schema(
       min: [1, "Number of floors cannot be less than 1"],
       max: [100, "Number of floors cannot be more than 100"],
     },
-    furnshing: {
+    furnishing: {
       type:String,
       enum: {
         values: [

@@ -79,7 +79,7 @@ const RealEstateDetail = () => {
       <p>Kindly contact me at ${user?.email} immediately.
       <p>Visit my profile <a href="${import.meta.env.VITE_APP_BASE_URL}/#/owner/tenant-user/${user?.slug}"><strong>${user?.firstName} ${user?.lastName}</strong></a>.</p>
       <br><br>
-      <p>Thank you,</p>
+      <p>Thank you, Team Tenantix</p>
       <p>${user?.firstName} ${user?.lastName},</p>
       <p>${user.address}</p>`,
     };
@@ -114,6 +114,8 @@ const RealEstateDetail = () => {
             <hr className="w-3/4 ml-3 border-t-2 rounded-md" />
             <p className="text-lg p-3 tracking-normal">
               {realEstate?.description}
+             
+
             </p>
           </div>
           <div className="">
@@ -122,30 +124,37 @@ const RealEstateDetail = () => {
             <div className="flex flex-wrap">
               <div className="flex p-3 mt-2 gap-2 items-center">
                 <span>
-                  <SquareFootRoundedIcon sx={{ color: "#738FA7" }} />
+            
                 </span>
-                <span className="font-semibold"> Area of Property </span>
+                <span className="font-semibold"> Area of Property  </span>
                 <p className="">{format(realEstate?.area)} sq. feet</p>
               </div>
               <div className="flex p-3 mt-2 gap-2 items-center">
-                <span>
-                  <HorizontalSplitRoundedIcon />
-                </span>
+                <span> </span>
                 <span className="font-semibold">
-                  Number of {realEstate?.floors > 1 ? "floors" : "floor"}
+                Number of {realEstate?.floors > 1 ? "floors" : "floor"}
                 </span>
                 <p className="">{format(realEstate?.floors)} </p>
               </div>
               <div className="flex p-3 mt-2 gap-2 items-center">
                 <span>
-                  <ExploreRoundedIcon sx={{ color: "#29b46e" }} />
+                
                 </span>
                 <span className="font-semibold"> Property Facing </span>
-                <p className="">{realEstate?.facing}</p>
+                <p className="">{realEstate?.facing}</p> </div>
 
-                <div className="font-semibold"> Furnishing
-                <p className="">{realEstate?.furnshing}</p></div>
-              </div>
+              <div className="flex p-3 mt-2 gap-2 items-center">
+  <span></span>
+  <span className="font-semibold">Furnishing</span>
+  <p className="">{realEstate?.furnishing}</p>
+</div>
+
+<div className="flex p-3 mt-2 gap-2 items-center">
+  <span></span>
+  <span className="font-semibold">Parking</span>
+  <p className="">{realEstate?.parking_availability}</p>
+</div>
+
             </div>
           </div>
         </div>
@@ -167,12 +176,7 @@ const RealEstateDetail = () => {
                     {realEstate?.propertyOwner?.lastName}
                   </p>
                 </div>
-                <div className="flex mt-2 ml-1 gap-2 items-center">
-                  <LocalPhoneRoundedIcon sx={{ color: "#6D9886" }} />
-                  <p className="ml-3">
-                    {realEstate?.propertyOwner?.phoneNumber}
-                  </p>
-                </div>
+                
                 <div className="flex mt-2 ml-1 gap-2 items-center">
                   <EmailRoundedIcon sx={{ color: "#E7AB79" }} />
                   <p className="overflow-auto">
@@ -228,7 +232,7 @@ const RealEstateDetail = () => {
                   </p>
 
                   <br />
-                  <p>Thank you,</p>
+                  <p>Thank you, Team Tenantix,</p>
                   <p>
                     {user?.firstName} {user?.lastName}
                   </p>

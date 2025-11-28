@@ -39,7 +39,7 @@ const PostRealEstate = () => {
     area: "",
     floors: "",
     facing: "",
-    furnshing: "",
+    furnishing: "",
   };
 
   const [values, setFormValues] = useState(initialFormValues);
@@ -163,6 +163,7 @@ const PostRealEstate = () => {
             name="security_deposit"
             type="number"
             placeholder="security_deposit"
+            required
             value={values.security_deposit}
             color="tertiary"
             onChange={handleChange}
@@ -225,14 +226,14 @@ const PostRealEstate = () => {
               
                     <FormSelectField
             label="Furnishing"
-            name="furnshing"
+            name="furnishing"
             options={[
               "Fully Furnished",
               "Semi-Furnished",
               "Unfurnished",
               "NOT APPLICABLE",
             ]}
-            value={values.furnshing}
+            value={values.furnishing}
             handleChange={handleChange}
           />
 
@@ -277,6 +278,7 @@ const PostRealEstate = () => {
                     name="city"
                     //color="tertiary"
                     //disabled
+                    type={"text"}
                     value={values.city}
                     handleChange={handleChange}
                   />
