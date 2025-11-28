@@ -111,7 +111,7 @@ const CreateContractPage = () => {
           <form id="form" onSubmit={handleConfirmation}>
             <div className="flex flex-wrap gap-4 justify-center md:justify-start">
               <TextField
-                //select
+                select
                 required
                 label="Tenant User"
                 value={contractForm.tenant}
